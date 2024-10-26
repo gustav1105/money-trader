@@ -1,17 +1,30 @@
-
 version: '3.8'
 
 services:
-  app:
+  frontend:
+    build:
+      context: ./exchange-converter
+      dockerfile: Dockerfile.app
+    ports:
+      - "4200:80"  # Map NGINX port 80 to localhost 4200 for Angular
+    depends_on:
+      - backend
+    volumes:
+      - node_modules_cache:/app/node_modules  # Optional cache for node_modules
+
+  backend:
     build:
       context: .
       dockerfile: Dockerfile
     env_file:
       - .env
     ports:
-      - "3000:3000"  # Defaulting to 3000 for the app
+      - "3000:3000"
     depends_on:
       - db
+    volumes:
+      - node_modules_cache:/usr/src/app/node_modules  # Optional cache for node_modules
+    command: ["./wait-for-it.sh", "db:5432", "--", "node", "dist/server.js"]
 
   db:
     image: postgres:latest
@@ -20,7 +33,7 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
-      - "5432:5432"  # Default PostgreSQL port
+      - "5432:5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -28,4 +41,5 @@ services:
 
 volumes:
   pgdata:
+  node_modules_cache:  # Shared cache volume for node_modules
 
