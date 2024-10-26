@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import { initializeDatabaseWithForexData } from './db/dbInit';
 import exchangeController from './controllers/exchangeController';
+import cron from 'node-cron';
 
 dotenv.config();
 
@@ -18,6 +19,18 @@ app.use(cors({
 
 app.use(express.json());            // JSON parser middleware
 app.use('/api', exchangeController); // API routes
+
+// Schedule the cron job to run at 00:01 every day
+cron.schedule('1 0 * * *', async () => {
+  try {
+    console.log('Starting database initialization with Forex data at 00:01');
+    await initializeDatabaseWithForexData();
+    console.log('Database successfully initialized and populated with Forex data.');
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Error during scheduled database initialization';
+    console.error(message);
+  }
+});
 
 // Start the server
 app.listen(port, async () => {
