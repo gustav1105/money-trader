@@ -8,6 +8,9 @@ This repository contains the code for the Money Trader application, which uses D
 
 - Docker and Docker Compose installed on your system.
 
+### Browser
+- http://localhost:4200
+
 ### Environment Variables
 
 Create a `.env` file within the `money-trader` directory (`/money-trader/.env`) with the following variables:
