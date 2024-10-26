@@ -1,0 +1,28 @@
+<div class="container">
+  <h1>{{ title }}</h1>
+
+  <form>
+    <label for="currencyPair">Select Currency Pair:</label>
+    <select id="currencyPair" [(ngModel)]="currencyPair" name="currencyPair">
+      <option *ngFor="let pair of currencyPairs" [value]="pair">{{ pair }}</option>
+    </select>
+
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" [(ngModel)]="amount" name="amount" />
+
+    <label for="date">Date:</label>
+    <select id="date" [(ngModel)]="selectedDate" name="date">
+      <option *ngFor="let date of dates" [value]="date">{{ date }}</option>
+    </select>
+
+    <button type="button" (click)="convertCurrency()">Convert</button>
+  </form>
+
+  <div *ngIf="conversionResult !== null">
+    <p>
+      Conversion Result: {{ amount }} {{ fromCurrency }} =
+      {{ conversionResult | number:'1.2-2' }} {{ toCurrency }}
+    </p>
+  </div>
+</div>
+
