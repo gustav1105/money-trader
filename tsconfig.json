@@ -4,16 +4,15 @@
     "module": "commonjs",
     "strict": true,
     "esModuleInterop": true,
+    "skipLibCheck": true,
     "outDir": "./dist",
-    "rootDir": "./src",
-    "resolveJsonModule": true
+    "rootDir": ".",
+    "baseUrl": ".",
+    "paths": {
+      "library/*": ["./library/src/*"]   // This is important
+    }
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "src/**/*.spec.ts"
-  ]
+  "include": ["src/**/*", "library/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
 

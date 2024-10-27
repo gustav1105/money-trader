@@ -1,4 +1,3 @@
-
 import express, { Request, Response, Router, RequestHandler } from 'express';
 import { fetchAvailableDates, fetchSupportedCurrencies, exchangeRate } from '../services/exchangeService';
 

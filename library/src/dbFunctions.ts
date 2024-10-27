@@ -1,4 +1,4 @@
-// Define the data structure type for Forex data
+// Ensure ForexData is correctly imported
 interface ForexData {
   symbol: string;
   open: number;
@@ -11,7 +11,7 @@ interface ForexData {
 }
 
 // Table creation query generator
-export const createTableForTodayIfNotExists = (tableName: string): string => {
+export const createTableForTodayIfNotExistsQuery = (tableName: string): string => {
   return `
     CREATE TABLE IF NOT EXISTS ${tableName} (
       id SERIAL PRIMARY KEY,
@@ -29,7 +29,7 @@ export const createTableForTodayIfNotExists = (tableName: string): string => {
 };
 
 // Insert data query generator
-export const insertDataIntoTable = (tableName: string, data: ForexData): string => {
+export const insertDataIntoTableQuery = (tableName: string, data: ForexData): string => {
   return `
     INSERT INTO ${tableName} (symbol, open, high, low, close, change, change_percent, timestamp, last_update)
     VALUES ('${data.symbol}', ${data.open}, ${data.high}, ${data.low}, ${data.close}, ${data.change}, ${data.changePercent}, ${data.timestamp}, NOW())
@@ -37,7 +37,7 @@ export const insertDataIntoTable = (tableName: string, data: ForexData): string 
 };
 
 // Query for available dates
-export const fetchAvailableDates = (): string => {
+export const fetchAvailableDatesQuery = (): string => {
   return `
     SELECT table_name FROM information_schema.tables
     WHERE table_name LIKE 'forex_data_%';
@@ -45,10 +45,39 @@ export const fetchAvailableDates = (): string => {
 };
 
 // Query for supported currencies
-export const fetchSupportedCurrencies = (date: string): string => {
+export const fetchSupportedCurrenciesQuery = (date: string): string => {
   const tableName = `forex_data_${date.replace(/-/g, '_')}`;
   return `
     SELECT DISTINCT symbol FROM ${tableName};
   `;
 };
+
+// Query for exchange rates
+export const rateQuery = (date: string): string => {
+  const tableName = `forex_data_${date.replace(/-/g, '_')}`;
+  
+  return `
+    SELECT * FROM ${tableName}
+    WHERE symbol = $1
+  `;
+};
+
+// Corrected exchange rate query generator
+export const exchangeRateQuery = (date: string): string => {
+  const tableName = `forex_data_${date.replace(/-/g, '_')}`;
+  
+  return `SELECT * FROM ${tableName} WHERE symbol = $1`;
+};
+
+// Supported currencies list
+export const supportedCurrencies: string[] = [
+  'GBP/USD',
+  'EUR/GBP',
+  'USD/JPY',
+  'AUD/USD',
+  'USD/CAD',
+  'EUR/USD',
+  'NZD/USD',
+  'ZAR/USD',
+];
 

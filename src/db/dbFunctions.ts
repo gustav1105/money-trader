@@ -1,20 +1,9 @@
 import { query } from './db';
+import { createTableForTodayIfNotExistsQuery, insertDataIntoTableQuery, exchangeRateQuery } from '../../library/src';
 
 export const createTableForTodayIfNotExists = async (tableName: string): Promise<void> => {
-  const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS ${tableName} (
-      id SERIAL PRIMARY KEY,
-      symbol VARCHAR(10) NOT NULL,
-      open DECIMAL(10, 6),
-      high DECIMAL(10, 6),
-      low DECIMAL(10, 6),
-      close DECIMAL(10, 6),
-      change DECIMAL(10, 6),
-      change_percent DECIMAL(5, 2),
-      timestamp BIGINT,
-      last_update TIMESTAMP DEFAULT NOW()
-    );
-  `;
+  const createTableQuery = createTableForTodayIfNotExistsQuery(tableName);
+  
   await query(createTableQuery);
 };
 
@@ -26,4 +15,15 @@ export const insertDataIntoTable = async (tableName: string, symbol: string, dat
   await query(insertQuery, [
     symbol, data.open, data.high, data.low, data.close, data.change, data.changePercent, data.timestamp
   ]);
+};
+
+export const exchangeRate = (
+  date:string,
+  baseCurrency: string,
+  counterCurrency: string
+): { queryText: string; values: string[] } => {
+  const queryText = exchangeRateQuery(date);
+  const symbol = `${baseCurrency}/${counterCurrency}`;
+
+  return { queryText, values: [symbol] };
 };
