@@ -11,7 +11,7 @@ export const getForexData = async (symbols: string[]): Promise<ForexData[]> => {
   const symbolString = symbols.join(',');
 
   console.log(`Requesting data for symbols: ${symbolString}`);
-  const response = await axios.get(FCSAPI_URL as string, {  // Use type assertion here
+  const response = await axios.get(FCSAPI_URL as string, {
     params: { access_key: FCSAPI_KEY, symbol: symbolString }
   });
 

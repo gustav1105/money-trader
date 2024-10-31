@@ -24,7 +24,7 @@ services:
       - db
     volumes:
       - node_modules_cache:/usr/src/app/node_modules  # Optional cache for node_modules
-    command: ["./wait-for-it.sh", "db:5432", "--", "node", "dist/server.js"]
+    command: ["./wait-for-it.sh", "db:5432", "--", "node", "dist/src/server.js"]
 
   db:
     image: postgres:latest

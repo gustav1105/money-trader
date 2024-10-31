@@ -1,13 +1,8 @@
 import { query } from '../db/db';
+import { fetchAvailableDatesQuery, fetchSupportedCurrenciesQuery, rateQuery } from '../../library/src';
 
 export const exchangeRate = async (date: string, baseCurrency: string, counterCurrency: string, amount: number) => {
-  const tableName = `forex_data_${date.replace(/-/g, '_')}`;
-  const queryText = `
-    SELECT * FROM ${tableName}
-    WHERE symbol = $1
-  `;
-
-  const result = await query(queryText, [`${baseCurrency}/${counterCurrency}`]);
+  const result = await query(rateQuery(date), [`${baseCurrency}/${counterCurrency}`]);
 
   if (result.rows.length === 0) {
     throw new Error(`No data found for ${baseCurrency}/${counterCurrency} on ${date}`);
@@ -22,10 +17,7 @@ export const exchangeRate = async (date: string, baseCurrency: string, counterCu
 
 export const fetchAvailableDates = async (): Promise<string[]> => {
   try {
-    const result = await query(`
-      SELECT table_name FROM information_schema.tables
-      WHERE table_name LIKE 'forex_data_%';
-    `);
+    const result = await query(fetchAvailableDatesQuery());
 
     // Typing `row` to ensure `table_name` is a string
     return result.rows.map((row: { table_name: string }) => 
@@ -38,12 +30,8 @@ export const fetchAvailableDates = async (): Promise<string[]> => {
 };
 
 export const fetchSupportedCurrencies = async (date: string): Promise<string[]> => {
-  const tableName = `forex_data_${date.replace(/-/g, '_')}`;
-
   try {
-    const result = await query(`
-      SELECT DISTINCT symbol FROM ${tableName}
-    `);
+    const result = await query(fetchSupportedCurrenciesQuery(date))
 
     // Typing `row` to ensure `symbol` is a string
     return result.rows.map((row: { symbol: string }) => row.symbol);

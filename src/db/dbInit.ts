@@ -1,7 +1,7 @@
 import { createTableForTodayIfNotExists, insertDataIntoTable } from './dbFunctions';
 import { getTableNameForToday } from './utils';
 import { getForexData } from '../services/forexService';
-import { supportedCurrencies } from '../services/currencies';
+import { supportedCurrencies } from '../../library/src'
 
 export const initializeDatabaseWithForexData = async (): Promise<void> => {
     const tableName = getTableNameForToday();
